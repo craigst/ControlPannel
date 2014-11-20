@@ -2,14 +2,14 @@
  
  Control Panel Has 4 switches and 6 relays
  1 switch toggles 2 relays = 0 = Both OFF, 1 = Both on, 2 = 1 On, 
- Lcd 2 line display not hooked up will display Company Name Top Line Back lit for 1-5 min after button pressed
- 
- 
+ Lcd 2 line display hooked up will display Company Name Top Line
+ 2nd line to scroll whats on
  
  
  */
  
  
+ #include <LiquidCrystal.h>
  
  const  int Relay1 = A0;
  const  int Relay2 = A1;
@@ -22,7 +22,7 @@
  const int button3 = 3;
  const int button4 = 4;
  int BeaconStage = 0;            // STAGE THAT BECONS ARE AT
- 
+ LiquidCrystal lcd(12, 11, 10, 9, 8, 7);
 
   void setup() {
 
@@ -45,34 +45,39 @@
   digitalWrite(Relay5, HIGH);
   digitalWrite(Relay6, HIGH);
   digitalWrite(13, LOW);
-  
-
+  lcd.begin(16, 2);
+  lcd.print("Eastern General");
+  lcd.setCursor(0, 1);  
 }
+
 
 // the loop function runs over and over again forever
 void loop() {
 
  if (digitalRead(button1) == HIGH)                                                                                      // Beacons toggle 
   {
-    if (BeaconStage == 2);                            // 1 SET ON , SO SWITCH OTHER OFF
-    {
-    digitalWrite(Relay5, HIGH);
-    BeaconStage = 0;
-    delay (1000);
-    }
-        if (BeaconStage == 1);                        // ALL ON , SO TURN OFF 1 RELAY
+               if (BeaconStage == 0)                   // NONE ON SO TURN ALL ON
+            {
+            digitalWrite(Relay5, LOW);
+            digitalWrite(Relay6, LOW);
+            BeaconStage++; 
+            delay (1000);
+            };
+           
+                if (BeaconStage == 2)                            // 1 SET ON , SO SWITCH OTHER OFF
+              {
+               digitalWrite(Relay5, HIGH);
+               BeaconStage = 0;
+               delay (1000);
+               };
+        
+        if (BeaconStage == 1)                       // ALL ON , SO TURN OFF 1 RELAY
         {
         digitalWrite(Relay6, HIGH);
         BeaconStage++;
         delay (1000);
-        }
-           if (BeaconStage == 0);                   // NONE ON SO TURN ALL ON
-            {
-            digitalWrite(Relay5, LOW);
-            digitalWrite(Relay6, LOW);
-            BeaconStage++;
-            delay (1000);
-            }
+        };
+    
   };
   
   
